@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using HomeAutomationWebServer.Helpers;
+using HomeAutomationWebServer.Models;
+using HomeAutomationWebServer.Models.Items;
 
 namespace HomeAutomationWebServer.Controllers
 {
@@ -10,7 +13,21 @@ namespace HomeAutomationWebServer.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            HomeInfoModel infoModel = new HomeInfoModel();
+            infoModel.CurrentDateTime = DateTime.Now;
+            infoModel.CpuInfo = new DeviceModel();
+            infoModel.CpuInfo.Name = HardwareInfo.GetProcessorInformation();
+            infoModel.CpuInfo.Temperature = HardwareInfo.GetTemperature();
+            infoModel.VideoInfo = new List<DeviceModel>();
+            var videoList = HardwareInfo.GetVideoCardsName();
+            foreach (var video in videoList)
+            {
+                DeviceModel vm = new DeviceModel();
+                vm.Name = video;
+                vm.Temperature = 1;
+                infoModel.VideoInfo.Add(vm);
+            }
+            return View(infoModel);
         }
 
         public ActionResult About()

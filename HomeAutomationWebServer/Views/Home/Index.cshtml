@@ -1,8 +1,24 @@
-﻿@{
+﻿@using HomeAutomationWebServer.Models
+@{
     ViewBag.Title = "Home Automation Web Server";
 }
 
-<div class="jumbotron">
-    <h1>Home Controller</h1>
-    <p class="lead">Will display infromation from sensors and some Interner sites (news, info, whether and so on)).</p>
+<h1>@ViewBag.Title</h1>
+<p class="lead">Will display infromation from sensors and some Interner sites (news, info, whether and so on).</p>
+<div class="current_time">Current Time: @Model.CurrentDateTime.ToString()</div>
+<br/>
+<div class="device_detail">
+    <h3>CPU INFO</h3>
+    <div><strong>Name: </strong>@Model.CpuInfo.Name</div>
+    <div><strong>Temperature: </strong>@Model.CpuInfo.Temperature</div>
 </div>
+@foreach (var videoItem in Model.VideoInfo)
+{
+    <div class="device_detail">
+        <h3>VIDEO INFO</h3>
+        <div><strong>Name: </strong>@videoItem.Name</div>
+        <div><strong>Temperature: </strong>@videoItem.Temperature</div>
+    </div>
+}
+
+
