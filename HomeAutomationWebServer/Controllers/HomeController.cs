@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using HomeAutomationWebServer.Helpers;
 using HomeAutomationWebServer.Models;
 using HomeAutomationWebServer.Models.Items;
+using OpenHardwareMonitor.Hardware;
 
 namespace HomeAutomationWebServer.Controllers
 {
@@ -13,6 +14,21 @@ namespace HomeAutomationWebServer.Controllers
     {
         public ActionResult Index()
         {
+            var cp = new Computer();
+            cp.Open();
+            cp.GPUEnabled = true;
+            cp.MainboardEnabled = true;
+            for(int i = 0; i<cp.Hardware.Count(); i++)
+            {
+                if (cp.Hardware[i].HardwareType == HardwareType.Mainboard)
+                {
+                    
+                }
+            }
+
+
+
+
             HomeInfoModel infoModel = new HomeInfoModel();
             infoModel.CurrentDateTime = DateTime.Now;
             infoModel.CpuInfo = new DeviceModel();
