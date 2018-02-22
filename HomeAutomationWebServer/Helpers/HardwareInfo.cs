@@ -451,30 +451,48 @@ namespace HomeAutomationWebServer.Helpers
             return info;
         }
         /// <summary>
-        /// Retrieving Motherboard Product Id.
+        /// Retrieving Processor temperature.
         /// </summary>
         /// <returns></returns>
         public static double GetTemperature()
         {
+            //ManagementClass processClass = new ManagementClass(@"root\WMI:MSAcpi_ThermalZoneTemperature");
+            //foreach (ManagementObject service in processClass.GetInstances())
+            //{
+            //    var rr = service.GetPropertyValue("CurrentTemperature");
+            //}
+            //ACPI Thermal Zone
+            //SelectQuery myQuery = new SelectQuery("root\\CIMV2","SELECT * from Win32_TemperatureProbe");
+            //ManagementObjectSearcher mySearcher = new ManagementObjectSearcher(myQuery);
+            //foreach (ManagementBaseObject obj in mySearcher.Get())
+            //{
+            //    var rr = obj["CurrentReading"];
+            //}
 
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\WMI", 
+           ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\WMI", 
                                             "SELECT * FROM MSAcpi_ThermalZoneTemperature");
-
-            foreach (ManagementObject wmi in searcher.Get())
+           if (searcher == null) return 0.0;
+            try
             {
-                try
+                foreach (ManagementObject wmi in searcher.Get())
                 {
-                    Double temp = Convert.ToDouble(wmi["CurrentTemperature"].ToString());
-                    temp = (temp - 2732) / 10.0;
-                    return temp;
+                    try
+                    {
+                        Double temp = Convert.ToDouble(wmi["CurrentTemperature"].ToString());
+                        temp = (temp - 2732) / 10.0;
+                        return temp;
+                    }
+                    catch { }
                 }
-                catch { }
-
+            }
+            catch(Exception err)
+            {
+                var s = err.Message;
             }
             return 0.0;
         }
         /// <summary>
-        /// Retrieving Motherboard Product Id.
+        /// Retrieving Video info.
         /// </summary>
         /// <returns></returns>
         public static List<string> GetVideoCardsName()
