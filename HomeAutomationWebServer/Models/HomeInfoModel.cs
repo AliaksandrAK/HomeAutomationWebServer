@@ -9,7 +9,7 @@ namespace HomeAutomationWebServer.Models
     public class HomeInfoModel
     {
         public DateTime CurrentDateTime { get; set; }
-        public DeviceModel CpuInfo { get; set; }
+        public CpuItems CpuInfo { get; set; }
         public List<DeviceModel> VideoInfo { get; set; }
     }
 }

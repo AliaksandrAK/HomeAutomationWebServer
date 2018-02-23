@@ -5,11 +5,11 @@ using System.Web;
 
 namespace HomeAutomationWebServer.Models.Items
 {
-    public class DeviceModel
+    public class CpuItems
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public double Temperature { get; set; }
         public double Power { get; set; }
+        public double Load { get; set; }
+        public List<DeviceModel> items { get; set; }
     }
 }

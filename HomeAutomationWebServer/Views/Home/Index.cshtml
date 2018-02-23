@@ -10,14 +10,26 @@
 <div class="device_detail">
     <h3>CPU INFO</h3>
     <div><strong>Name: </strong>@Model.CpuInfo.Name</div>
-    <div><strong>Temperature: </strong>@Model.CpuInfo.Temperature</div>
+    <div><strong>Power: </strong>@Model.CpuInfo.Power</div>
+    <div><strong>Load: </strong>@Model.CpuInfo.Load</div>
+    <br />
+    @foreach (var cpuItem in Model.CpuInfo.items)
+    {
+        <div class="item_detail">
+            <div>Name: @cpuItem.Name</div>
+            <div>Temperature: <label style="color: blue">@cpuItem.Temperature</label></div>
+        </div>
+    }
 </div>
 @foreach (var videoItem in Model.VideoInfo)
 {
     <div class="device_detail">
         <h3>VIDEO INFO</h3>
         <div><strong>Name: </strong>@videoItem.Name</div>
-        <div><strong>Temperature: </strong>@videoItem.Temperature</div>
+        <div>
+            <strong>Temperature: </strong>
+            <label style="color: blue">@videoItem.Temperature</label>
+        </div>
     </div>
 }
 

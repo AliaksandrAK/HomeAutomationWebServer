@@ -207,6 +207,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\HomeInfoModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Items\CpuItems.cs" />
     <Compile Include="Models\Items\DeviceModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
