@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using HomeAutomationWebServer.Helpers;
 using HomeAutomationWebServer.Models;
 using HomeAutomationWebServer.Models.Items;
@@ -12,57 +13,63 @@ namespace HomeAutomationWebServer.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            HomeInfoModel infoModel = new HomeInfoModel();
-            infoModel.CurrentDateTime = DateTime.Now;
-            infoModel.CpuInfo = new CpuItems();
-            infoModel.CpuInfo.items = new List<DeviceModel>();
-            infoModel.VideoInfo = new List<DeviceModel>();
+        private HomeInfoModel _infoModel;
+        private Computer _cpDevices;
 
-            var cp = new Computer();
-            cp.Open();
-            cp.GPUEnabled = true;
-            cp.MainboardEnabled = true;
-            cp.CPUEnabled = true;
-            for (int i = 0; i < cp.Hardware.Count(); i++)
+        public HomeController()
+        {
+            _infoModel = new HomeInfoModel();
+            _infoModel.CpuInfo = new CpuItems();
+            _infoModel.CpuInfo.items = new List<DeviceModel>();
+            _infoModel.VideoInfo = new List<DeviceModel>();
+
+            _cpDevices = new Computer();
+            _cpDevices.Open();
+            _cpDevices.GPUEnabled = true;
+            _cpDevices.MainboardEnabled = true;
+            _cpDevices.CPUEnabled = true;
+        }
+
+        private void UpdateSensors()
+        {
+            for (int i = 0; i < _cpDevices.Hardware.Count(); i++)
             {
-                if (cp.Hardware[i].HardwareType == HardwareType.CPU)
+                if (_cpDevices.Hardware[i].HardwareType == HardwareType.CPU)
                 {
-                    infoModel.CpuInfo.Name = cp.Hardware[i].Name;
-                    infoModel.CpuInfo.Power = 0;
-                    infoModel.CpuInfo.Load = 0;
-                    foreach (ISensor sensor in cp.Hardware[i].Sensors)
+                    _infoModel.CpuInfo.Name = _cpDevices.Hardware[i].Name;
+                    _infoModel.CpuInfo.Power = 0;
+                    _infoModel.CpuInfo.Load = 0;
+                    foreach (ISensor sensor in _cpDevices.Hardware[i].Sensors)
                     {
                         if (sensor.SensorType == SensorType.Temperature)
                         {
                             DeviceModel cpuDev = new DeviceModel();
                             cpuDev.Name = sensor.Name;
                             cpuDev.Temperature = sensor.Value.HasValue ? sensor.Value.Value : 0;
-                            infoModel.CpuInfo.items.Add(cpuDev);
+                            _infoModel.CpuInfo.items.Add(cpuDev);
                         }
                         else if (sensor.SensorType == SensorType.Power)
                         {
-                            infoModel.CpuInfo.Power += sensor.Value.HasValue ? sensor.Value.Value : 0;
+                            _infoModel.CpuInfo.Power += sensor.Value.HasValue ? sensor.Value.Value : 0;
                         }
                         else if (sensor.SensorType == SensorType.Load && sensor.Name.Contains("Total"))
                         {
-                            infoModel.CpuInfo.Load += sensor.Value.HasValue ? sensor.Value.Value : 0;
+                            _infoModel.CpuInfo.Load += sensor.Value.HasValue ? sensor.Value.Value : 0;
                         }
                     }
                 }
-                if (cp.Hardware[i].HardwareType == HardwareType.GpuAti ||
-                    cp.Hardware[i].HardwareType == HardwareType.GpuNvidia)
+                if (_cpDevices.Hardware[i].HardwareType == HardwareType.GpuAti ||
+                    _cpDevices.Hardware[i].HardwareType == HardwareType.GpuNvidia)
                 {
-                    foreach (ISensor sensor in cp.Hardware[i].Sensors)
+                    foreach (ISensor sensor in _cpDevices.Hardware[i].Sensors)
                     {
                         if (sensor.SensorType == SensorType.Temperature)
                         {
                             DeviceModel vm = new DeviceModel();
-                            vm.Name = cp.Hardware[i].Name;
+                            vm.Name = _cpDevices.Hardware[i].Name;
                             vm.Temperature = sensor.Value.HasValue ? sensor.Value.Value : 0;
-                            if(vm.Temperature>100) vm.Temperature = 5.0 / 9.0 * (vm.Temperature - 32);
-                            infoModel.VideoInfo.Add(vm);
+                            if (vm.Temperature > 100) vm.Temperature = 5.0 / 9.0 * (vm.Temperature - 32);
+                            _infoModel.VideoInfo.Add(vm);
                         }
                     }
                 }
@@ -81,7 +88,14 @@ namespace HomeAutomationWebServer.Controllers
                             infoModel.VideoInfo.Add(vm);
                         }
             */
-            return View(infoModel);
+        }
+        public ActionResult Index()
+        {
+            _infoModel.CurrentDateTime = DateTime.Now;
+            _infoModel.CpuInfo.items.Clear();
+            _infoModel.VideoInfo.Clear();
+            UpdateSensors();
+            return View(_infoModel);
         }
 
         public ActionResult About()
@@ -96,6 +110,17 @@ namespace HomeAutomationWebServer.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult UpdateCpuInfo()
+        {
+            UpdateSensors();
+            var jsonSerialiser = new JavaScriptSerializer();
+            var jsonPR = jsonSerialiser.Serialize(_infoModel.CpuInfo);
+
+            return new JsonResult { Data = new { jsonPR, isSuccess = true }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }
 }

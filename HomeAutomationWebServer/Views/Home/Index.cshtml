@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Home Automation Web Server";
 }
+<script type="text/javascript" src="../../Scripts/Custom/updatesensors.js"></script>
+<script type="text/javascript" src="../../Scripts/Libs/jquery-1.10.2.min.js"></script>
 
 <h1>@ViewBag.Title</h1>
 <p class="lead">Will display infromation from sensors and some Interner sites (news, info, whether and so on).</p>
@@ -10,8 +12,14 @@
 <div class="device_detail">
     <h3>CPU INFO</h3>
     <div><strong>Name: </strong>@Model.CpuInfo.Name</div>
-    <div><strong>Power: </strong>@Model.CpuInfo.Power</div>
-    <div><strong>Load: </strong>@Model.CpuInfo.Load</div>
+    <div>
+        <strong>Power: </strong>
+        <input type="text" id="power-id" readonly>
+    </div>
+    <div>
+        <strong>Load: </strong>
+        <input type="text" id="load-id" readonly>
+    </div>
     <br />
     @foreach (var cpuItem in Model.CpuInfo.items)
     {
@@ -32,5 +40,13 @@
         </div>
     </div>
 }
+<script type="text/javascript">
+    $(document).ready(function() {
+        updateCpuInfo();
+        //setTimeout(updateCpuInfo, 1000);
 
-
+        var timerId = setInterval(function() {
+            updateCpuInfo();
+        }, 5000);
+    });
+</script>
