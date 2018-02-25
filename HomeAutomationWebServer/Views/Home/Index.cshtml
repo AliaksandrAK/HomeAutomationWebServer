@@ -13,40 +13,47 @@
     <h3>CPU INFO</h3>
     <div><strong>Name: </strong>@Model.CpuInfo.Name</div>
     <div>
-        <strong>Power: </strong>
-        <input type="text" id="power-id" readonly>
+        <label class="item-header">Power: </label>
+        <input type="text" class="item-input" id="power-id" value=@Model.CpuInfo.Power readonly>
     </div>
     <div>
-        <strong>Load: </strong>
-        <input type="text" id="load-id" readonly>
+        <label class="item-header">Load: </label>
+        <input type="text" class="item-input" id="load-id" value=@Model.CpuInfo.Load readonly>
     </div>
     <br />
+    @{ int item = 0; }
     @foreach (var cpuItem in Model.CpuInfo.items)
     {
+        string idValue = string.Format("cpu-input-item{0}", item);
+        item++;
         <div class="item_detail">
             <div>Name: @cpuItem.Name</div>
-            <div>Temperature: <label style="color: blue">@cpuItem.Temperature</label></div>
+            <label class="item-header">Temperature: </label>
+            <input type="text" class="item-input" id=@idValue style="color: blue" value=@cpuItem.Temperature readonly>
         </div>
     }
 </div>
+@{ item = 0; }
 @foreach (var videoItem in Model.VideoInfo)
 {
+    string idValue = string.Format("video-input-item{0}", item);
+    item++;
     <div class="device_detail">
         <h3>VIDEO INFO</h3>
         <div><strong>Name: </strong>@videoItem.Name</div>
         <div>
-            <strong>Temperature: </strong>
-            <label style="color: blue">@videoItem.Temperature</label>
+            <label class="item-header">Temperature: </label>
+            <input type="text" class="item-input" id=@idValue style="color: blue" value=@videoItem.Temperature readonly>
         </div>
     </div>
 }
 <script type="text/javascript">
     $(document).ready(function() {
-        updateCpuInfo();
+        updateCompInfo();
         //setTimeout(updateCpuInfo, 1000);
 
         var timerId = setInterval(function() {
-            updateCpuInfo();
-        }, 5000);
+            updateCompInfo();
+        }, 10000);
     });
 </script>

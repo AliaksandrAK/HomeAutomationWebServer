@@ -32,6 +32,9 @@ namespace HomeAutomationWebServer.Controllers
 
         private void UpdateSensors()
         {
+            _infoModel.CurrentDateTime = DateTime.Now;
+            _infoModel.CpuInfo.items.Clear();
+            _infoModel.VideoInfo.Clear();
             for (int i = 0; i < _cpDevices.Hardware.Count(); i++)
             {
                 if (_cpDevices.Hardware[i].HardwareType == HardwareType.CPU)
@@ -39,14 +42,19 @@ namespace HomeAutomationWebServer.Controllers
                     _infoModel.CpuInfo.Name = _cpDevices.Hardware[i].Name;
                     _infoModel.CpuInfo.Power = 0;
                     _infoModel.CpuInfo.Load = 0;
+                    int id = 0;
                     foreach (ISensor sensor in _cpDevices.Hardware[i].Sensors)
                     {
                         if (sensor.SensorType == SensorType.Temperature)
                         {
-                            DeviceModel cpuDev = new DeviceModel();
-                            cpuDev.Name = sensor.Name;
-                            cpuDev.Temperature = sensor.Value.HasValue ? sensor.Value.Value : 0;
-                            _infoModel.CpuInfo.items.Add(cpuDev);
+                            if(sensor.Value.HasValue)
+                            {
+                                DeviceModel cpuDev = new DeviceModel();
+                                cpuDev.Id = id;
+                                cpuDev.Name = sensor.Name;
+                                cpuDev.Temperature = sensor.Value.Value;
+                                _infoModel.CpuInfo.items.Add(cpuDev);
+                            }
                         }
                         else if (sensor.SensorType == SensorType.Power)
                         {
@@ -56,22 +64,31 @@ namespace HomeAutomationWebServer.Controllers
                         {
                             _infoModel.CpuInfo.Load += sensor.Value.HasValue ? sensor.Value.Value : 0;
                         }
+                        id++;
                     }
                 }
                 if (_cpDevices.Hardware[i].HardwareType == HardwareType.GpuAti ||
                     _cpDevices.Hardware[i].HardwareType == HardwareType.GpuNvidia)
                 {
+                    DeviceModel vm = new DeviceModel();
+                    vm.Name = _cpDevices.Hardware[i].Name;
+                    vm.Power = 0;
                     foreach (ISensor sensor in _cpDevices.Hardware[i].Sensors)
                     {
                         if (sensor.SensorType == SensorType.Temperature)
                         {
-                            DeviceModel vm = new DeviceModel();
-                            vm.Name = _cpDevices.Hardware[i].Name;
-                            vm.Temperature = sensor.Value.HasValue ? sensor.Value.Value : 0;
-                            if (vm.Temperature > 100) vm.Temperature = 5.0 / 9.0 * (vm.Temperature - 32);
-                            _infoModel.VideoInfo.Add(vm);
+                            if(sensor.Value.HasValue)
+                            {
+                                vm.Temperature = sensor.Value.Value;
+                                if (vm.Temperature > 100) vm.Temperature = 5.0 / 9.0 * (vm.Temperature - 32);
+                            }
+                        }
+                        else if (sensor.SensorType == SensorType.Power)
+                        {
+                            vm.Power += sensor.Value.HasValue ? sensor.Value.Value : 0;
                         }
                     }
+                    _infoModel.VideoInfo.Add(vm);
                 }
             }
 
@@ -91,9 +108,6 @@ namespace HomeAutomationWebServer.Controllers
         }
         public ActionResult Index()
         {
-            _infoModel.CurrentDateTime = DateTime.Now;
-            _infoModel.CpuInfo.items.Clear();
-            _infoModel.VideoInfo.Clear();
             UpdateSensors();
             return View(_infoModel);
         }
@@ -114,11 +128,11 @@ namespace HomeAutomationWebServer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public JsonResult UpdateCpuInfo()
+        public JsonResult UpdateCompInfo()
         {
             UpdateSensors();
             var jsonSerialiser = new JavaScriptSerializer();
-            var jsonPR = jsonSerialiser.Serialize(_infoModel.CpuInfo);
+            var jsonPR = jsonSerialiser.Serialize(_infoModel);
 
             return new JsonResult { Data = new { jsonPR, isSuccess = true }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }

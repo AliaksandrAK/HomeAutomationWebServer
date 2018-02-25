@@ -1,8 +1,7 @@
-function updateCpuInfo( )
+function updateCompInfo()
 {
     var lPathName = window.location.pathname.toLowerCase();
-    var baseUrl2 = window.location.origin + "/Home/UpdateCpuInfo";
-
+    var baseUrl2 = window.location.origin + "/Home/UpdateCompInfo";
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
@@ -12,9 +11,16 @@ function updateCpuInfo( )
 
             var cpuSummary = jQuery.parseJSON(data.jsonPR);
             if (cpuSummary != null) {
-                var ff = $("#power-id");
-                $("#power-id").val(cpuSummary.Power);
-                $("#load-id").val(cpuSummary.Load);
+                $("#power-id").val(cpuSummary.CpuInfo.Power);
+                $("#load-id").val(cpuSummary.CpuInfo.Load);
+                $.each(cpuSummary.CpuInfo.items, function (i, val) {
+                    var id = "#cpu-input-item" + i;
+                    $(id).val(val.Temperature);
+                });
+                $.each(cpuSummary.VideoInfo, function (i, val) {
+                    var id = "#video-input-item" + i;
+                    $(id).val(val.Temperature);
+                });
             }
         }
     });

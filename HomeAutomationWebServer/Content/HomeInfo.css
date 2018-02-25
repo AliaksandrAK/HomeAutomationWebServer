@@ -31,3 +31,9 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+.item-header { 
+    width: 40%;
+}
+.item-input { 
+    width: 50%;
+}
