@@ -2,8 +2,18 @@
 @{
     ViewBag.Title = "Home Automation Web Server";
 }
-<script type="text/javascript" src="../../Scripts/Custom/updatesensors.js"></script>
-<script type="text/javascript" src="../../Scripts/Libs/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Libs/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Custom/updatesensors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        updateCompInfo();
+        //setTimeout(updateCpuInfo, 1000);
+
+        var timerId = setInterval(function() {
+            updateCompInfo();
+        }, 10000);
+    });
+</script>
 
 <h1>@ViewBag.Title</h1>
 <p class="lead">Will display infromation from sensors and some Interner sites (news, info, whether and so on).</p>
@@ -47,13 +57,3 @@
         </div>
     </div>
 }
-<script type="text/javascript">
-    $(document).ready(function() {
-        updateCompInfo();
-        //setTimeout(updateCpuInfo, 1000);
-
-        var timerId = setInterval(function() {
-            updateCompInfo();
-        }, 10000);
-    });
-</script>

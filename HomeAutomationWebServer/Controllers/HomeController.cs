@@ -24,10 +24,10 @@ namespace HomeAutomationWebServer.Controllers
             _infoModel.VideoInfo = new List<DeviceModel>();
 
             _cpDevices = new Computer();
-            _cpDevices.Open();
             _cpDevices.GPUEnabled = true;
             _cpDevices.MainboardEnabled = true;
             _cpDevices.CPUEnabled = true;
+            _cpDevices.Open();
         }
 
         private void UpdateSensors()
