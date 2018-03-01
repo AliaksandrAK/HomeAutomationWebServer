@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -22,16 +25,17 @@ namespace HomeAutomationWebServer.Controllers
             _infoModel.CpuInfo = new CpuItems();
             _infoModel.CpuInfo.items = new List<DeviceModel>();
             _infoModel.VideoInfo = new List<DeviceModel>();
+        }
+
+        private void UpdateSensorsUsingMonitorLib()
+        {
 
             _cpDevices = new Computer();
             _cpDevices.GPUEnabled = true;
             _cpDevices.MainboardEnabled = true;
             _cpDevices.CPUEnabled = true;
             _cpDevices.Open();
-        }
 
-        private void UpdateSensors()
-        {
             _infoModel.CurrentDateTime = DateTime.Now;
             _infoModel.CpuInfo.items.Clear();
             _infoModel.VideoInfo.Clear();
@@ -92,23 +96,37 @@ namespace HomeAutomationWebServer.Controllers
                 }
             }
 
-            /*
-                        infoModel.CpuInfo.Name = HardwareInfo.GetProcessorInformation();
-                        infoModel.CpuInfo.Temperature = HardwareInfo.GetTemperature();
-                        infoModel.VideoInfo = new List<DeviceModel>();
-                        var videoList = HardwareInfo.GetVideoCardsName();
-                        foreach (var video in videoList)
-                        {
-                            DeviceModel vm = new DeviceModel();
-                            vm.Name = video;
-                            vm.Temperature = 1;
-                            infoModel.VideoInfo.Add(vm);
-                        }
-            */
+
+        }
+
+        private void UpdateSystemInfo()
+        {
+            _infoModel.CurrentDateTime = DateTime.Now;
+            _infoModel.CpuInfo.items.Clear();
+            _infoModel.VideoInfo.Clear();
+
+            _infoModel.CpuInfo.Name = HardwareInfo.GetProcessorInformation();
+            DeviceModel cpuDev = new DeviceModel();
+            cpuDev.Id = 0;
+            cpuDev.Name = "Core";
+            cpuDev.Temperature = HardwareInfo.GetTemperature();
+            var vpuSpeed = HardwareInfo.GetCpuSpeedInGHz();
+            cpuDev.Power = vpuSpeed.HasValue ? vpuSpeed.Value : 0;
+            _infoModel.CpuInfo.items.Add(cpuDev);
+
+            _infoModel.VideoInfo = new List<DeviceModel>();
+            var videoList = HardwareInfo.GetVideoCardsName();
+            foreach (var video in videoList)
+            {
+                DeviceModel vm = new DeviceModel();
+                vm.Name = video;
+                vm.Temperature = 1;
+                _infoModel.VideoInfo.Add(vm);
+            }
         }
         public ActionResult Index()
         {
-            UpdateSensors();
+            UpdateSystemInfo();
             return View(_infoModel);
         }
 
@@ -126,15 +144,34 @@ namespace HomeAutomationWebServer.Controllers
             return View();
         }
 
+        public ActionResult System()
+        {
+            var ipAd = NetworkInterface.GetAllNetworkInterfaces()
+                        .SelectMany(adapter => adapter.GetIPProperties().UnicastAddresses)
+                        .Where(adr => adr.Address.AddressFamily == AddressFamily.InterNetwork && adr.IsDnsEligible)
+                        .Select(adr => adr.Address.ToString()).FirstOrDefault();
+
+            //To get the local IP address 
+            string sHostName = Dns.GetHostName();
+            IPHostEntry ipE = Dns.GetHostByName(sHostName);
+            IPAddress[] IpA = ipE.AddressList;
+
+            string sysPath = "http://";
+            if (IpA.Length > 0) sysPath = "http://" + IpA[0].ToString() + ":8085/";
+            else sysPath = "http://localhost:8085/";
+            return Redirect(sysPath);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public JsonResult UpdateCompInfo()
         {
-            UpdateSensors();
+            UpdateSystemInfo();
             var jsonSerialiser = new JavaScriptSerializer();
             var jsonPR = jsonSerialiser.Serialize(_infoModel);
 
             return new JsonResult { Data = new { jsonPR, isSuccess = true }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
+
     }
 }
