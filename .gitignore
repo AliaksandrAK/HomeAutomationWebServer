@@ -30,6 +30,7 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 logs/
+bin/
 /packages
 /ServiceChannel.API.Database/sql
 /ServiceChannel.UI.Login.Web/log.txt

@@ -11,6 +11,9 @@ using HomeAutomationWebServer.Helpers;
 using HomeAutomationWebServer.Models;
 using HomeAutomationWebServer.Models.Items;
 using OpenHardwareMonitor.Hardware;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace HomeAutomationWebServer.Controllers
 {
@@ -29,7 +32,6 @@ namespace HomeAutomationWebServer.Controllers
 
         private void UpdateSensorsUsingMonitorLib()
         {
-
             _cpDevices = new Computer();
             _cpDevices.GPUEnabled = true;
             _cpDevices.MainboardEnabled = true;
@@ -95,8 +97,6 @@ namespace HomeAutomationWebServer.Controllers
                     _infoModel.VideoInfo.Add(vm);
                 }
             }
-
-
         }
 
         private void UpdateSystemInfo()
@@ -124,9 +124,28 @@ namespace HomeAutomationWebServer.Controllers
                 _infoModel.VideoInfo.Add(vm);
             }
         }
+        private void UpdateSystemInfoFromFile()
+        {
+            _infoModel.CurrentDateTime = DateTime.Now;
+            _infoModel.CpuInfo.items.Clear();
+            _infoModel.VideoInfo.Clear();
+            string path = Server.MapPath("~/bin/system_info.json");
+            FileStream sourceFile = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            if (sourceFile.Length > 0)
+            {
+                byte[] getContent = new byte[(int)sourceFile.Length];
+                UTF8Encoding temp = new UTF8Encoding(true);
+                sourceFile.Read(getContent, 0, (int)sourceFile.Length);
+                String json = temp.GetString(getContent);
+                //Welcome sysInfo = Welcome.FromJson(json);
+                _infoModel = JsonConvert.DeserializeObject<HomeInfoModel>(json);
+
+                sourceFile.Close();
+            }
+        }
         public ActionResult Index()
         {
-            UpdateSystemInfo();
+            UpdateSystemInfoFromFile();
             return View(_infoModel);
         }
 
@@ -166,7 +185,7 @@ namespace HomeAutomationWebServer.Controllers
         [AllowAnonymous]
         public JsonResult UpdateCompInfo()
         {
-            UpdateSystemInfo();
+            UpdateSystemInfoFromFile();
             var jsonSerialiser = new JavaScriptSerializer();
             var jsonPR = jsonSerialiser.Serialize(_infoModel);
 

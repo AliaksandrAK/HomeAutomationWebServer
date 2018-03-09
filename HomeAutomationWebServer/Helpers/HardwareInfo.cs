@@ -500,11 +500,14 @@ namespace HomeAutomationWebServer.Helpers
             List<string> result = new List<string>();
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                                             "SELECT * FROM Win32_DisplayConfiguration");
-            foreach (ManagementObject wmi in searcher.Get())
+
+            ManagementObjectSearcher searcher1 = new ManagementObjectSearcher("root\\CIMV2",
+                                            "SELECT * FROM Win32_VideoController");
+            foreach (ManagementObject wmi in searcher1.Get())
             {
                 foreach (PropertyData property in wmi.Properties)
                 {
-                    if (property.Name == "Description")
+                    if (property.Name == "Caption")
                     {
                         string graphicsCard = property.Value.ToString();
                         result.Add(graphicsCard);

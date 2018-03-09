@@ -9,6 +9,6 @@
 </div>
 
 <div class="form-group text-input">
-    <button class="btn btn-default" type="button" onclick="window.location.replace('http://localhost:8000/')">Local Camera</button>
+    <button class="btn btn-default" type="button" onclick="location.href='@Url.Action("LocalCameras", "Camera")'">Local Camera</button>
     <button class="btn btn-default" type="button" onclick="location.href='@Url.Action("IpCameras", "Camera")'" >Network Cameras</button>
 </div>
