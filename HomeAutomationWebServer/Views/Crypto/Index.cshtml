@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <br />
+    <div class="user-wrapper">
+        <h3>Trading recommendation using crex24.com: @ViewBag.UpdatedDate</h3>
+    </div>
+    <br />
+    <br />
+    <div>       
+        <table id="UsersTable" class="table table-condensed table-lined table-hover tablesorter table-rezervirovanie">
+            <thead>
+                <tr>
+                    <th class="header">Crypto Currency PATH</th>
+                    <th class="header">Previous volume</th>
+                    <th class="header">Volume</th>
+                </tr>
+            </thead>
+            @foreach (var item in ViewBag.Trades)
+            {
+                <tr>
+                    <td>@item.CryptoPath </td>
+                    <td>@item.PrevOut </td>
+                    <td>@item.VolumeOut </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div>
+        <h3>Trading PAIR from crex24.com</h3>
+        <table id="PairssTable" class="table table-condensed table-lined table-hover tablesorter table-rezervirovanie">
+            <thead>
+                <tr>
+                    <th class="header">Crypto Currency Pair</th>
+                    <th class="header">Продать</th>
+                    <th class="header">Купить</th>
+                </tr>
+            </thead>
+            @foreach (var item in ViewBag.Pairs)
+            {
+                <tr>
+                    <td>@item.Symbol </td>
+                    <td>@item.SellingRate </td>
+                    <td>@item.PurchaseRate </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

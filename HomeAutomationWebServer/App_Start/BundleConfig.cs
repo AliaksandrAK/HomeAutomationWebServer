@@ -25,6 +25,7 @@ namespace HomeAutomationWebServer
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
+                      "~/Content/bootstrap-toggle.min.css",
                       "~/Content/site.css",
                       "~/Content/homeinfo.css"));
         }

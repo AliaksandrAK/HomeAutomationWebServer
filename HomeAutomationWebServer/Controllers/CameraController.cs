@@ -35,11 +35,11 @@ namespace HomeAutomationWebServer.Controllers
 
             //To get the local IP address 
             string sHostName = Dns.GetHostName();
-            IPHostEntry ipE = Dns.GetHostByName(sHostName);
+            IPHostEntry ipE = Dns.GetHostEntry(sHostName);
             IPAddress[] IpA = ipE.AddressList;
 
             string sysPath = "http://";
-            if (IpA.Length > 0) sysPath = "http://" + IpA[0].ToString() + ":8000/";
+            if (IpA.Length > 0) sysPath = "http://" + IpA[3].ToString() + ":8000/";
             else sysPath = "http://localhost:8000/";
             return Redirect(sysPath);
         }
