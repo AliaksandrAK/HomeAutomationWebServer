@@ -14,10 +14,14 @@ namespace HomeAutomationWebServer.Controllers
         {
             CryptoInfoService cryptoServ = new CryptoInfoService();
             var tradeInfo = cryptoServ.GetRecommendationInfo();
-            var myPairs = cryptoServ.GetMyPairsInfo();
+            bool alert;
+            var myPairs = cryptoServ.GetMyPairsInfo(out alert);
+            var myPairsProc = cryptoServ.GetPairsProcessed();
 
             ViewBag.Trades = tradeInfo;
             ViewBag.Pairs = myPairs;
+            ViewBag.PairsProc = myPairsProc;
+            ViewBag.Alert = alert;
             ViewBag.UpdatedDate = tradeInfo.Count > 0 ? tradeInfo[0].UpdatedDate : DateTime.Now;
 
             return View();

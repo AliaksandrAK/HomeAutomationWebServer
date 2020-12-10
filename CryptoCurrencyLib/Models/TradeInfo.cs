@@ -13,5 +13,9 @@ namespace CryptoCurrency.Models
         public decimal PurchaseRate { get; set; }
         public DateTime UpdatedDate { get; set; }
 
+        public string Comment { get; set; }
+
+        public string Color { get; set; }
+
     }
 }

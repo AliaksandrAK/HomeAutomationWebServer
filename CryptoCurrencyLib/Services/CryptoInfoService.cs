@@ -15,37 +15,65 @@ namespace CryptoCurrency
         Dictionary<int, List<string>> _currencyPath;
         Dictionary<int, List<string>> _currencyPairs;
         List<Models.TradeInfo> _tradesInfoList;
+        List<Models.TradeInfo> _tradesProccedList;
+        string _xrp = "XRP";
+        string _ltc = "LTC";
+        string _btc = "BTC";
+        string _eth = "ETH";
+        string _eos = "EOS";
+        string _etc = "ETC";
+
+        decimal _xrpBtc = 0.00002871m;
+        decimal _xrpBtcRec = 0.000032m;
+        bool _kupilXrp = true;//true = купил XRP за BTC
+
+        decimal _ltcBtc = 0;
+        decimal _ltcBtcRec = 0.0044m;
+        bool _kupilLtc = true;//true = купил LTC за BTC
+
+        decimal _ltcEth = 0;
+        decimal _ltcEthRec = 0.15m;
+        bool _kupilLtcEth = true;//true = купил LTC за ETH
+
+        decimal _eosBtc = 0;
+        decimal _eosBtcRec = 0.000175m;
+        bool _kupilEosBtc = true;//true = купил EOS за BTC
+
+
         public CryptoInfoService()
         {
             _currencyPath = new Dictionary<int, List<string>>();
-            List<string> itemPath = new List<string> { "LTC", "BTC", "ETH", "LTC" }; //LTC - BTC - ETH - LTC
+            List<string> itemPath = new List<string> { _ltc, _btc, _eth, _ltc }; //LTC - BTC - ETH - LTC
             _currencyPath.Add(1, itemPath);
-            List<string> itemPath1 = new List<string> { "LTC", "BTC", "ETC", "ETH", "LTC" }; //LTC-BTC-ETC-ETH-LTC
-            _currencyPath.Add(2, itemPath1);
-            List<string> itemPath2 = new List<string> { "LTC", "ETH", "BTC", "LTC" };
+            //List<string> itemPath1 = new List<string> { "LTC", "BTC", "ETC", "ETH", "LTC" }; //LTC-BTC-ETC-ETH-LTC
+            //_currencyPath.Add(2, itemPath1);
+            List<string> itemPath2 = new List<string> { _ltc, _eth, _btc, _ltc };
             _currencyPath.Add(3, itemPath2);
-            List<string> itemPath3 = new List<string> { "ETC", "ETH", "BTC", "ETC" };
-            _currencyPath.Add(4, itemPath3);
-            List<string> itemPath4 = new List<string> { "ETC", "BTC", "ETH", "ETC" };
-            _currencyPath.Add(5, itemPath4);
+            //List<string> itemPath3 = new List<string> { "ETC", "ETH", "BTC", "ETC" };
+            //_currencyPath.Add(4, itemPath3);
+            //List<string> itemPath4 = new List<string> { "ETC", "BTC", "ETH", "ETC" };
+            //_currencyPath.Add(5, itemPath4);
 
-            List<string> itemPath9 = new List<string> { "LTC", "BTC", "ETC" };
+            List<string> itemPath9 = new List<string> { _ltc, _btc, _etc };
             _currencyPath.Add(10, itemPath9);
-            List<string> itemPath10 = new List<string> { "LTC", "ETH", "ETC" };
+            List<string> itemPath10 = new List<string> { _ltc, _eth, _etc };
             _currencyPath.Add(11, itemPath10);
-            List<string> itemPath11 = new List<string> { "ETC", "BTC", "LTC" };
-            _currencyPath.Add(12, itemPath11);
-            List<string> itemPath12 = new List<string> { "ETC", "ETH", "LTC" };
-            _currencyPath.Add(13, itemPath12);
+            //List<string> itemPath11 = new List<string> { "ETC", "BTC", "LTC" };
+            //_currencyPath.Add(12, itemPath11);
+            //List<string> itemPath12 = new List<string> { "ETC", "ETH", "LTC" };
+            //_currencyPath.Add(13, itemPath12);
 
-            List<string> itemPath5 = new List<string> { "ETC", "BTC", "USD" };
-            _currencyPath.Add(6, itemPath5);
-            List<string> itemPath6 = new List<string> { "ETC", "ETH", "USD" };
-            _currencyPath.Add(7, itemPath6);
-            List<string> itemPath7 = new List<string> { "LTC", "BTC", "USD" };
+            //List<string> itemPath5 = new List<string> { "ETC", "BTC", "USD" };
+            //_currencyPath.Add(6, itemPath5);
+            //List<string> itemPath6 = new List<string> { "ETC", "ETH", "USD" };
+            //_currencyPath.Add(7, itemPath6);
+            List<string> itemPath7 = new List<string> { _ltc, _btc, "USDPM" };
             _currencyPath.Add(8, itemPath7);
-            List<string> itemPath8 = new List<string> { "LTC", "ETH", "USD" };
+            List<string> itemPath8 = new List<string> { _ltc, _eth, "USDPM" };
             _currencyPath.Add(9, itemPath8);
+
+            List<string> itemPath20 = new List<string> { _xrp, _btc, "USDPM" };
+            _currencyPath.Add(20, itemPath20);
 
             /*
             List<string> itemPath13 = new List<string> { "ETC", "BTC", "USD", "ETH", "ETC" };
@@ -59,16 +87,53 @@ namespace CryptoCurrency
             */
 
             _currencyPairs = new Dictionary<int, List<string>>();
-            List<string> itemPair = new List<string> { "LTC", "BTC"};
-            _currencyPairs.Add(1, itemPair);
-//            List<string> itemPair1 = new List<string> { "ETC", "ETH"};
-//            _currencyPairs.Add(2, itemPair1);
-            List<string> itemPair2 = new List<string> { "EOS", "BTC" };
+            //List<string> itemPair = new List<string> { "LTC", "BTC"};
+            //_currencyPairs.Add(1, itemPair);
+            List<string> itemPair1 = new List<string> { _ltc, _eth };
+            _currencyPairs.Add(2, itemPair1);
+            List<string> itemPair2 = new List<string> { _ltc, _btc };
             _currencyPairs.Add(3, itemPair2);
-            List<string> itemPair3 = new List<string> { "XRP", "BTC" };
+            List<string> itemPair3 = new List<string> { _xrp, _btc };
             _currencyPairs.Add(4, itemPair3);
+            List<string> itemPair4 = new List<string> { _eos, _btc };
+            _currencyPairs.Add(5, itemPair4);
 
             _tradesInfoList = new List<Models.TradeInfo>();
+
+            _tradesProccedList = new List<Models.TradeInfo>();
+            Models.TradeInfo newItem = new Models.TradeInfo();
+            newItem.Symbol = _xrp + "/" + _btc;
+            newItem.PurchaseRate = _xrpBtc;
+            newItem.SellingRate = 0;
+            newItem.UpdatedDate = new DateTime(2020, 12, 9, 11, 0, 0);
+            newItem.Comment = "Купил XRP. Надо продать не менее чем за " + _xrpBtcRec.ToString();
+
+            _tradesProccedList.Add(newItem);
+
+            Models.TradeInfo newItem1 = new Models.TradeInfo();
+            newItem1.Symbol = _ltc + "/" + _eth;
+            newItem1.PurchaseRate = _ltcEth;
+            newItem1.SellingRate = 0;
+            newItem1.UpdatedDate = DateTime.Now;
+            newItem1.Comment = "Надо продать LTC не менее чем за " + _ltcEthRec.ToString();
+            _tradesProccedList.Add(newItem1);
+
+            Models.TradeInfo newItem2 = new Models.TradeInfo();
+            newItem2.Symbol = _ltc + "/" + _btc;
+            newItem2.PurchaseRate = _ltcBtc;
+            newItem2.SellingRate = 0;
+            newItem2.UpdatedDate = DateTime.Now;
+            newItem2.Comment = "Надо продать LTC не менее чем за " + _ltcBtcRec.ToString();
+            _tradesProccedList.Add(newItem2);
+
+            Models.TradeInfo newItem3 = new Models.TradeInfo();
+            newItem3.Symbol = _eos + "/" + _btc;
+            newItem3.PurchaseRate = _eosBtc;
+            newItem3.SellingRate = 0;
+            newItem3.UpdatedDate = DateTime.Now;
+            newItem3.Comment = "Можно продать EOS не менее чем за " + _eosBtcRec.ToString();
+            _tradesProccedList.Add(newItem3);
+
 
         }
         public List<Models.TradeInfo> GetCurrenciesInfo()
@@ -201,6 +266,7 @@ namespace CryptoCurrency
                         newItem.PurchaseRate = tradeItem.ask.Value;
                         newItem.SellingRate = tradeItem.bid.Value;
                         newItem.UpdatedDate = tradeItem.timestamp;
+
                         _tradesInfoList.Add(newItem);
                     }
                 }
@@ -212,8 +278,13 @@ namespace CryptoCurrency
 
             return _tradesInfoList;
         }
-        public List<Models.TradeInfo> GetMyPairsInfo()
+        public List<Models.TradeInfo> GetPairsProcessed()
         {
+            return _tradesProccedList;
+        }
+        public List<Models.TradeInfo> GetMyPairsInfo(out bool Alert)
+        {
+            Alert = false;
             List<Models.TradeInfo> tradesInfoList = GetPairsInfo();
             List<Models.TradeInfo> resultList = new List<Models.TradeInfo>();
             foreach (var pair in tradesInfoList)
@@ -226,6 +297,43 @@ namespace CryptoCurrency
                         string pair2 = pathItem.Value[i + 1] + "-" + pathItem.Value[i];
                         if (pair.Symbol.Equals(pair1) || pair.Symbol.Equals(pair2))
                         {
+                            if (pair.Symbol.Contains(_xrp))
+                            {
+                                pair.Color = "red";
+                                if (_kupilXrp)
+                                {
+                                    if (pair.PurchaseRate > _xrpBtcRec) pair.Color = "green";
+                                }
+                                else if (pair.PurchaseRate < _xrpBtcRec) pair.Color = "green";
+                            }
+                            if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_btc))
+                            {
+                                pair.Color = "red";
+                                if (_kupilLtc)
+                                {
+                                    if (pair.PurchaseRate > _ltcBtcRec) pair.Color = "green";
+                                }
+                                else if (pair.PurchaseRate < _ltcBtcRec) pair.Color = "green";
+                            }
+                            if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_eth))
+                            {
+                                pair.Color = "red";
+                                if (_kupilLtcEth)
+                                {
+                                    if (pair.PurchaseRate > _ltcEthRec) pair.Color = "green";
+                                }
+                                else if (pair.PurchaseRate < _ltcEthRec) pair.Color = "green";
+                            }
+                            if (pair.Symbol.Contains(_eos) && pair.Symbol.Contains(_btc))
+                            {
+                                pair.Color = "red";
+                                if (_kupilEosBtc)
+                                {
+                                    if (pair.PurchaseRate > _eosBtcRec) pair.Color = "green";
+                                }
+                                else if (pair.PurchaseRate < _eosBtcRec) pair.Color = "green";
+                            }
+                            if(pair.Color.Contains("green")) Alert = true;
                             resultList.Add(pair);
                         }
                     }

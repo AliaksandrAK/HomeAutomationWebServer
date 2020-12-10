@@ -3,11 +3,12 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<meta http-equiv="Refresh" content="120">
 
 <div class="row">
     <br />
     <div class="user-wrapper">
-        <h3>Trading recommendation using crex24.com: @ViewBag.UpdatedDate</h3>
+        <h3>Trading info from crex24.com: @ViewBag.UpdatedDate</h3>
     </div>
     <br />
     <br />
@@ -31,7 +32,7 @@
         </table>
     </div>
     <div>
-        <h3>Trading PAIR from crex24.com</h3>
+        <h3>Trading PAIR</h3>
         <table id="PairssTable" class="table table-condensed table-lined table-hover tablesorter table-rezervirovanie">
             <thead>
                 <tr>
@@ -43,11 +44,40 @@
             @foreach (var item in ViewBag.Pairs)
             {
                 <tr>
-                    <td>@item.Symbol </td>
+                    <td style="color: @item.Color" >@item.Symbol </td>
                     <td>@item.SellingRate </td>
                     <td>@item.PurchaseRate </td>
                 </tr>
             }
         </table>
     </div>
+    <div>
+        <h3>Trading DONE or recommend</h3>
+        <table id="PairssTable" class="table table-condensed table-lined table-hover tablesorter table-rezervirovanie">
+            <thead>
+                <tr>
+                    <th class="header">Crypto Currency Pair</th>
+                    <th class="header">Продал</th>
+                    <th class="header">Купил</th>
+                    <th class="header">Комментарии</th>
+                    <th class="header">Дата</th>
+                </tr>
+            </thead>
+            @foreach (var item in ViewBag.PairsProc)
+            {
+                <tr>
+                    <td>@item.Symbol </td>
+                    <td>@item.SellingRate </td>
+                    <td>@item.PurchaseRate </td>
+                    <td>@item.Comment </td>
+                    <td>@item.UpdatedDate.ToString()</td>
+                </tr>
+            }
+        </table>
+    </div>
 </div>
+
+<script type="text/javascript">
+    var myJsVariable = '@ViewBag.Alert';
+    if (myJsVariable === 'True') document.title = "!!! ВНИМАНИЕ !!!";
+</script>
