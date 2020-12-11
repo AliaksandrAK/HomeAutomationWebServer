@@ -25,23 +25,28 @@ namespace CryptoCurrency
         string _btg = "BTG";
 
         decimal _xrpBtc = 0.00002871m;
-        decimal _xrpBtcRec = 0.000032m;
-        bool _kupilXrp = true;//true = купил XRP за BTC
+        decimal _xrpBtcRec = 0.000028m;
+        decimal _xrpBtcSell = 0.00003215m;
+        bool _kupilXrp = false;//true = купил XRP за BTC
 
         decimal _ltcBtc = 0;
         decimal _ltcBtcRec = 0.0044m;
+        decimal _ltcBtcSell = 0;
         bool _kupilLtc = true;//true = купил LTC за BTC
 
         decimal _ltcEth = 0;
         decimal _ltcEthRec = 0.15m;
+        decimal _ltcEthSell = 0;
         bool _kupilLtcEth = true;//true = купил LTC за ETH
 
         decimal _eosBtc = 0;
         decimal _eosBtcRec = 0.000175m;
+        decimal _eosBtcSell = 0;
         bool _kupilEosBtc = true;//true = купил EOS за BTC
 
         decimal _btgBtc = 0;
         decimal _btgBtcRec = 0.0005m;
+        decimal _btgBtcSell = 0;
         bool _kupilBtgBtc = true;//true = купил EOS за BTC
 
 
@@ -106,33 +111,55 @@ namespace CryptoCurrency
             _currencyPairs.Add(6, itemPair5);
 
             _tradesInfoList = new List<Models.TradeInfo>();
-
             _tradesProccedList = new List<Models.TradeInfo>();
+
+            //Recommendation CRYPTO table//////////////////////////////////////////////////////
+            //XRP
             Models.TradeInfo newItem = new Models.TradeInfo();
             newItem.Symbol = _xrp + "/" + _btc;
             newItem.PurchaseRate = _xrpBtc;
-            newItem.SellingRate = 0;
-            newItem.UpdatedDate = new DateTime(2020, 12, 9, 11, 0, 0);
-            newItem.Comment = "Купил XRP. Надо продать не менее чем за " + _xrpBtcRec.ToString();
-
+            newItem.SellingRate = _xrpBtcSell;
+            newItem.UpdatedDate = new DateTime(2020, 12, 11, 11, 0, 0);
+            string tmpCoinChange = "Продал " + _xrp + " за " + _xrpBtcSell.ToString();
+            newItem.Comment = tmpCoinChange + ". Рекоммендация купить " + _xrp + " за " + _xrpBtcRec.ToString();
+            if (_kupilXrp)
+            {
+                tmpCoinChange = "Купил " + _xrp + " за " + _xrpBtc.ToString();
+                newItem.Comment = tmpCoinChange + ". Рекоммендация продать " + _xrp + " за " + _xrpBtcRec.ToString();
+            }
             _tradesProccedList.Add(newItem);
 
+            //LTC - ETH
             Models.TradeInfo newItem1 = new Models.TradeInfo();
             newItem1.Symbol = _ltc + "/" + _eth;
             newItem1.PurchaseRate = _ltcEth;
-            newItem1.SellingRate = 0;
+            newItem1.SellingRate = _ltcEthSell;
             newItem1.UpdatedDate = DateTime.Now;
-            newItem1.Comment = "Надо продать LTC не менее чем за " + _ltcEthRec.ToString();
+            tmpCoinChange = "Продал " + _ltc + " за " + _ltcEthSell.ToString();
+            newItem1.Comment = tmpCoinChange + ". Рекоммендация купить " + _ltc + " за " + _ltcEthRec.ToString();
+            if (_kupilLtc)
+            {
+                tmpCoinChange = "Купил " + _ltc + " за " + _ltcEth.ToString();
+                newItem1.Comment = tmpCoinChange + ". Рекоммендация продать " + _ltc + " за " + _ltcEthRec.ToString();
+            }
             _tradesProccedList.Add(newItem1);
 
+            //LTC - BTC
             Models.TradeInfo newItem2 = new Models.TradeInfo();
             newItem2.Symbol = _ltc + "/" + _btc;
             newItem2.PurchaseRate = _ltcBtc;
-            newItem2.SellingRate = 0;
+            newItem2.SellingRate = _ltcBtcSell;
             newItem2.UpdatedDate = DateTime.Now;
-            newItem2.Comment = "Надо продать LTC не менее чем за " + _ltcBtcRec.ToString();
+            tmpCoinChange = "Продал " + _ltc + " за " + _ltcBtcSell.ToString();
+            newItem2.Comment = tmpCoinChange + ". Рекоммендация купить " + _ltc + " за " + _ltcBtcRec.ToString();
+            if (_kupilLtcEth)
+            {
+                tmpCoinChange = "Купил " + _ltc + " за " + _ltcBtc.ToString();
+                newItem2.Comment = tmpCoinChange + ". Рекоммендация продать " + _ltc + " за " + _ltcBtcRec.ToString();
+            }
             _tradesProccedList.Add(newItem2);
 
+            //EOS
             Models.TradeInfo newItem3 = new Models.TradeInfo();
             newItem3.Symbol = _eos + "/" + _btc;
             newItem3.PurchaseRate = _eosBtc;
@@ -141,6 +168,7 @@ namespace CryptoCurrency
             newItem3.Comment = "Можно продать EOS не менее чем за " + _eosBtcRec.ToString();
             _tradesProccedList.Add(newItem3);
 
+            //BTG
             Models.TradeInfo newItem4 = new Models.TradeInfo();
             newItem4.Symbol = _btg + "/" + _btc;
             newItem4.PurchaseRate = _btgBtc;
@@ -148,8 +176,6 @@ namespace CryptoCurrency
             newItem4.UpdatedDate = DateTime.Now;
             newItem4.Comment = "Можно продать BTG не менее чем за " + _btgBtcRec.ToString();
             _tradesProccedList.Add(newItem4);
-
-
 
         }
         public List<Models.TradeInfo> GetCurrenciesInfo()
