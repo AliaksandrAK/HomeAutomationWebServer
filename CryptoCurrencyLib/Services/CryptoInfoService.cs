@@ -22,6 +22,7 @@ namespace CryptoCurrency
         string _eth = "ETH";
         string _eos = "EOS";
         string _etc = "ETC";
+        string _btg = "BTG";
 
         decimal _xrpBtc = 0.00002871m;
         decimal _xrpBtcRec = 0.000032m;
@@ -38,6 +39,10 @@ namespace CryptoCurrency
         decimal _eosBtc = 0;
         decimal _eosBtcRec = 0.000175m;
         bool _kupilEosBtc = true;//true = купил EOS за BTC
+
+        decimal _btgBtc = 0;
+        decimal _btgBtcRec = 0.0005m;
+        bool _kupilBtgBtc = true;//true = купил EOS за BTC
 
 
         public CryptoInfoService()
@@ -97,6 +102,8 @@ namespace CryptoCurrency
             _currencyPairs.Add(4, itemPair3);
             List<string> itemPair4 = new List<string> { _eos, _btc };
             _currencyPairs.Add(5, itemPair4);
+            List<string> itemPair5 = new List<string> { _btg, _btc };
+            _currencyPairs.Add(6, itemPair5);
 
             _tradesInfoList = new List<Models.TradeInfo>();
 
@@ -133,6 +140,15 @@ namespace CryptoCurrency
             newItem3.UpdatedDate = DateTime.Now;
             newItem3.Comment = "Можно продать EOS не менее чем за " + _eosBtcRec.ToString();
             _tradesProccedList.Add(newItem3);
+
+            Models.TradeInfo newItem4 = new Models.TradeInfo();
+            newItem4.Symbol = _btg + "/" + _btc;
+            newItem4.PurchaseRate = _btgBtc;
+            newItem4.SellingRate = 0;
+            newItem4.UpdatedDate = DateTime.Now;
+            newItem4.Comment = "Можно продать BTG не менее чем за " + _btgBtcRec.ToString();
+            _tradesProccedList.Add(newItem4);
+
 
 
         }
@@ -333,7 +349,17 @@ namespace CryptoCurrency
                                 }
                                 else if (pair.PurchaseRate < _eosBtcRec) pair.Color = "green";
                             }
-                            if(pair.Color.Contains("green")) Alert = true;
+                            if (pair.Symbol.Contains(_btg) && pair.Symbol.Contains(_btc))
+                            {
+                                pair.Color = "red";
+                                if (_kupilBtgBtc)
+                                {
+                                    if (pair.PurchaseRate > _btgBtcRec) pair.Color = "green";
+                                }
+                                else if (pair.PurchaseRate < _btgBtcRec) pair.Color = "green";
+                            }
+
+                            if (pair.Color.Contains("green")) Alert = true;
                             resultList.Add(pair);
                         }
                     }
