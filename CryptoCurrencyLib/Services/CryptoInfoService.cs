@@ -35,17 +35,17 @@ namespace CryptoCurrency
         bool _kupilLtc = true;//true = купил LTC за BTC
 
         decimal _ltcEth = 0;
-        decimal _ltcEthRec = 0.15m;
+        decimal _ltcEthRec = 0.145m;
         decimal _ltcEthSell = 0;
         bool _kupilLtcEth = true;//true = купил LTC за ETH
 
         decimal _eosBtc = 0;
-        decimal _eosBtcRec = 0.000175m;
+        decimal _eosBtcRec = 0.00016m;
         decimal _eosBtcSell = 0;
         bool _kupilEosBtc = true;//true = купил EOS за BTC
 
         decimal _btgBtc = 0;
-        decimal _btgBtcRec = 0.0005m;
+        decimal _btgBtcRec = 0.000495m;
         decimal _btgBtcSell = 0;
         bool _kupilBtgBtc = true;//true = купил EOS за BTC
 
