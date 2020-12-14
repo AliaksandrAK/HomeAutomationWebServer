@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHardwareMonitorLib", "o
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoCurrencyLib", "CryptoCurrencyLib\CryptoCurrencyLib.csproj", "{9FA7E568-B2D3-4294-9622-DF7048F7415C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAutomationService", "HomeAutomationService\HomeAutomationService.csproj", "{5274331E-B1AF-4141-A76B-2F1C5CD7C465}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9FA7E568-B2D3-4294-9622-DF7048F7415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FA7E568-B2D3-4294-9622-DF7048F7415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FA7E568-B2D3-4294-9622-DF7048F7415C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5274331E-B1AF-4141-A76B-2F1C5CD7C465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5274331E-B1AF-4141-A76B-2F1C5CD7C465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5274331E-B1AF-4141-A76B-2F1C5CD7C465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5274331E-B1AF-4141-A76B-2F1C5CD7C465}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

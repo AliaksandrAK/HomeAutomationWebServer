@@ -17,5 +17,9 @@ namespace CryptoCurrency.Models
 
         public string Color { get; set; }
 
+        public decimal RecommendRate { get; set; }
+        public string ColorRecom { get; set; }
+        public string ColorRecom1 { get; set; }
+
     }
 }

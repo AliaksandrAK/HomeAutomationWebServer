@@ -39,14 +39,16 @@
                     <th class="header">Crypto Currency Pair</th>
                     <th class="header">Продать</th>
                     <th class="header">Купить</th>
+                    <th class="header">Рекомендация</th>
                 </tr>
             </thead>
             @foreach (var item in ViewBag.Pairs)
             {
                 <tr>
                     <td style="color: @item.Color" >@item.Symbol </td>
-                    <td>@item.SellingRate </td>
-                    <td>@item.PurchaseRate </td>
+                    <td style="color: @item.ColorRecom" >@item.SellingRate </td>
+                    <td style="color: @item.ColorRecom1" >@item.PurchaseRate </td>
+                    <td>@item.RecommendRate </td>
                 </tr>
             }
         </table>

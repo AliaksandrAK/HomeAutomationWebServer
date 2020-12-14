@@ -328,25 +328,42 @@ namespace CryptoCurrency
                         string pair2 = pathItem.Value[i + 1] + "-" + pathItem.Value[i];
                         if (pair.Symbol.Equals(pair1) || pair.Symbol.Equals(pair2))
                         {
+                            pair.ColorRecom = "";
+                            pair.ColorRecom1 = "";
                             if (pair.Symbol.Contains(_xrp) && pair.Symbol.Contains(_btc))
                             {
                                 pair.Color = GetColor(pair.PurchaseRate, _kupilXrp, _xrpBtcRec);
+                                pair.RecommendRate = _xrpBtcRec;
+                                if(_kupilXrp) pair.ColorRecom = pair.Color;
+                                else pair.ColorRecom1 = pair.Color;
                             }
                             else if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_btc))
                             {
                                 pair.Color = GetColor(pair.PurchaseRate, _kupilLtc, _ltcBtcRec);
+                                pair.RecommendRate = _ltcBtcRec;
+                                if (_kupilLtc) pair.ColorRecom = pair.Color;
+                                else pair.ColorRecom1 = pair.Color;
                             }
                             else if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_eth))
                             {
                                 pair.Color = GetColor(pair.PurchaseRate, _kupilLtcEth, _ltcEthRec);
+                                pair.RecommendRate = _ltcEthRec;
+                                if (_kupilLtcEth) pair.ColorRecom = pair.Color;
+                                else pair.ColorRecom1 = pair.Color;
                             }
                             else if (pair.Symbol.Contains(_eos) && pair.Symbol.Contains(_btc))
                             {
                                 pair.Color = GetColor(pair.PurchaseRate, _kupilEosBtc, _eosBtcRec);
+                                pair.RecommendRate = _eosBtcRec;
+                                if (_kupilEosBtc) pair.ColorRecom = pair.Color;
+                                else pair.ColorRecom1 = pair.Color;
                             }
                             else if (pair.Symbol.Contains(_btg) && pair.Symbol.Contains(_btc))
                             {
                                 pair.Color = GetColor(pair.PurchaseRate, _kupilBtgBtc, _btgBtcRec);
+                                pair.RecommendRate = _btgBtcRec;
+                                if (_kupilBtgBtc) pair.ColorRecom = pair.Color;
+                                else pair.ColorRecom1 = pair.Color;
                             }
 
                             if (pair.Color.Contains("green")) Alert = true;
