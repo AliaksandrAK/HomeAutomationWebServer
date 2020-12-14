@@ -72,7 +72,7 @@ namespace HomeAutomationService
 
                     // Settings.  
                     message.To.Add(new MailAddress(email));
-                    message.From = new MailAddress("kusonski.a@gmail.com");
+                    message.From = new MailAddress("");
                     message.Subject = !string.IsNullOrEmpty(subject) ? subject : "CRYPTO ALERT";
                     message.Body = body;
                     message.IsBodyHtml = true;
@@ -82,8 +82,8 @@ namespace HomeAutomationService
                         // Settings.  
                         var credential = new NetworkCredential
                         {
-                            UserName = "kusonski.a@gmail.com",
-                            Password = "aska3baska"//"budun345"
+                            UserName = "",
+                            Password = ""
                         };
 
                         // Settings.  
