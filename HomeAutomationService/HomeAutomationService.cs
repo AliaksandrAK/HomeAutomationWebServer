@@ -44,7 +44,7 @@ namespace HomeAutomationService
             eventLog1.WriteEntry("In OnStart.");
             // Set up a timer that triggers every minute.
             Timer timer = new Timer();
-            timer.Interval = 60000; // 60 seconds
+            timer.Interval = 120000; // 60 seconds
             timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
             timer.Start();
         }
@@ -61,7 +61,6 @@ namespace HomeAutomationService
             CryptoInfoService cryptoServ = new CryptoInfoService();
             bool alert;
             var myPairs = cryptoServ.GetMyPairsInfo(out alert);
-            var dd = _logger.GetDest();
             if (alert)//send message
             {
                 var emailTo = _mySettings.ReadSetting("emailTo");
@@ -95,6 +94,7 @@ namespace HomeAutomationService
                     message.To.Add(new MailAddress(email));
                     message.From = new MailAddress(myEmailFrom);
                     message.Subject = !string.IsNullOrEmpty(subject) ? subject : "CRYPTO ALERT";
+                    message.Subject = message.Subject + "___" + DateTime.Now.ToString();
                     message.Body = body;
                     message.IsBodyHtml = true;
 
