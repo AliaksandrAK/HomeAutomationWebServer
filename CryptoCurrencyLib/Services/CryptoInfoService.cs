@@ -382,5 +382,9 @@ namespace CryptoCurrency
                 var last = orders.FirstOrDefault();
             }
         }
+        public string GetInfoJson(List<Models.TradeInfo> tradeInfo)
+        {
+            return JsonConvert.SerializeObject(tradeInfo);
+        }
     }
 }

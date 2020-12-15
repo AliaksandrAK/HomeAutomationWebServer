@@ -18,6 +18,9 @@ namespace HomeAutomationService
     public partial class HomeAutomationService : ServiceBase
     {
         private int eventId = 1;
+        CryptoCurrency.Helpers.Logger _logger;
+        CryptoCurrency.Helpers.MySettings _mySettings;
+
 
         public HomeAutomationService()
         {
@@ -30,6 +33,10 @@ namespace HomeAutomationService
             }
             eventLog1.Source = "HomeAutomationSource";
             eventLog1.Log = "HomeAutomationNewLog";
+
+            _logger = new CryptoCurrency.Helpers.Logger();
+            _mySettings = new CryptoCurrency.Helpers.MySettings();
+
         }
 
         protected override void OnStart(string[] args)
@@ -54,9 +61,20 @@ namespace HomeAutomationService
             CryptoInfoService cryptoServ = new CryptoInfoService();
             bool alert;
             var myPairs = cryptoServ.GetMyPairsInfo(out alert);
-            if(alert)//send message
+            var dd = _logger.GetDest();
+            if (alert)//send message
             {
-                SendEmailAsync("relon@tut.by", "TEST from HomeAutomation APP");
+                var emailTo = _mySettings.ReadSetting("emailTo");
+                if (!string.IsNullOrEmpty(emailTo))
+                {
+                    _logger.LogFile("Info: Send email to: " + emailTo);
+                    var msg = cryptoServ.GetInfoJson(myPairs);
+                    SendEmailAsync(emailTo, msg);
+                }
+                else
+                {
+                    _logger.LogFile("Error: emailTo is Empty.");
+                }
             }
         }
 
@@ -66,13 +84,16 @@ namespace HomeAutomationService
             {
                 try
                 {
+                    var myEmailFrom = _mySettings.ReadSetting("emailFrom");
+                    var myEmailPassw = _mySettings.ReadSetting("emailPassw");
+
                     // Initialization.  
                     var body = msg;
                     var message = new MailMessage();
 
                     // Settings.  
                     message.To.Add(new MailAddress(email));
-                    message.From = new MailAddress("");
+                    message.From = new MailAddress(myEmailFrom);
                     message.Subject = !string.IsNullOrEmpty(subject) ? subject : "CRYPTO ALERT";
                     message.Body = body;
                     message.IsBodyHtml = true;
@@ -82,8 +103,8 @@ namespace HomeAutomationService
                         // Settings.  
                         var credential = new NetworkCredential
                         {
-                            UserName = "",
-                            Password = ""
+                            UserName = myEmailFrom,
+                            Password = myEmailPassw
                         };
 
                         // Settings.  
@@ -100,6 +121,7 @@ namespace HomeAutomationService
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogFile("Error: Send email: " + ex.Message);
                 }
 
             });
