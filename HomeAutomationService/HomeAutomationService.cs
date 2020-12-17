@@ -44,7 +44,7 @@ namespace HomeAutomationService
             eventLog1.WriteEntry("In OnStart.");
             // Set up a timer that triggers every minute.
             Timer timer = new Timer();
-            timer.Interval = 120000; // 60 seconds
+            timer.Interval = 300000; // 
             timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
             timer.Start();
         }
