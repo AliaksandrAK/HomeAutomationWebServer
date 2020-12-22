@@ -16,6 +16,7 @@ namespace CryptoCurrency
         Dictionary<int, List<string>> _currencyPairs;
         List<Models.TradeInfo> _tradesInfoList;
         List<Models.TradeInfo> _tradesProccedList;
+        List<Models.CurrencyPairInfo> _currencyPairInfo;
         string _xrp = "XRP";
         string _ltc = "LTC";
         string _btc = "BTC";
@@ -45,47 +46,62 @@ namespace CryptoCurrency
         decimal _btgBtcSell = 0;
         bool _kupilBtgBtc = true;//true = купил EOS за BTC
 
-        decimal _ltcBtc = 0;
-        decimal _ltcBtcRec = 0.0044m;
-        decimal _ltcBtcSell = 0;
-        bool _kupilLtc = true;//true = купил LTC за BTC
+        void AddWorkPairs()
+        {
+            Models.CurrencyPairInfo curitem = new Models.CurrencyPairInfo();
+            curitem.FirstSymbol = _xrp;
+            curitem.SecondSymbol = _btc;
+            curitem.BuyRate = _xrpBtc;
+            curitem.SellRate = _xrpBtcSell;
+            curitem.RecomRate = _xrpBtcRec;
+            curitem.BuySellMode = _kupilXrp;
+            _currencyPairInfo.Add(curitem);
 
+            Models.CurrencyPairInfo curitem1 = new Models.CurrencyPairInfo();
+            curitem1.FirstSymbol = _ltc;
+            curitem1.SecondSymbol = _eth;
+            curitem1.BuyRate = _ltcEth;
+            curitem1.SellRate = _ltcEthSell;
+            curitem1.RecomRate = _ltcEthRec;
+            curitem1.BuySellMode = _kupilLtcEth;
+            _currencyPairInfo.Add(curitem1);
 
+            Models.CurrencyPairInfo curitem2 = new Models.CurrencyPairInfo();
+            curitem2.FirstSymbol = _eos;
+            curitem2.SecondSymbol = _btc;
+            curitem2.BuyRate = _eosBtc;
+            curitem2.SellRate = _eosBtcSell;
+            curitem2.RecomRate = _eosBtcRec;
+            curitem2.BuySellMode = _kupilEosBtc;
+            _currencyPairInfo.Add(curitem2);
+
+            Models.CurrencyPairInfo curitem3 = new Models.CurrencyPairInfo();
+            curitem3.FirstSymbol = _btg;
+            curitem3.SecondSymbol = _btc;
+            curitem3.BuyRate = _btgBtc;
+            curitem3.SellRate = _btgBtcSell;
+            curitem3.RecomRate = _btgBtcRec;
+            curitem3.BuySellMode = _kupilBtgBtc;
+            _currencyPairInfo.Add(curitem3);
+        }
         void AddPairs()
         {
             _currencyPairs = new Dictionary<int, List<string>>();
-            //List<string> itemPair = new List<string> { "LTC", "BTC"};
-            //_currencyPairs.Add(1, itemPair);
-            List<string> itemPair1 = new List<string> { _ltc, _eth };
-            _currencyPairs.Add(2, itemPair1);
-            //List<string> itemPair2 = new List<string> { _ltc, _btc };
-            //_currencyPairs.Add(3, itemPair2);
-            List<string> itemPair3 = new List<string> { _xrp, _btc };
-            _currencyPairs.Add(4, itemPair3);
-            List<string> itemPair4 = new List<string> { _eos, _btc };
-            _currencyPairs.Add(5, itemPair4);
-            List<string> itemPair5 = new List<string> { _btg, _btc };
-            _currencyPairs.Add(6, itemPair5);
+            int iKey = 1;
+            foreach (Models.CurrencyPairInfo curitem in _currencyPairInfo)
+            {
+                List<string> itemPair1 = new List<string> { curitem.FirstSymbol, curitem.SecondSymbol };
+                _currencyPairs.Add(iKey, itemPair1);
+                iKey++;
+            }
         }
         void AddRecommendationInfo()
         {
-            //Recommendation CRYPTO table//////////////////////////////////////////////////////
-            //XRP - BTC
-            _tradesProccedList.Add(AddItem(_xrpBtc, _xrpBtcSell, _xrpBtcRec, _kupilXrp, _xrp, _btc,
-                                            new DateTime(2020, 12, 11, 10, 0, 0)));
-            //LTC - ETH
-            _tradesProccedList.Add(AddItem(_ltcEth, _ltcEthSell, _ltcEthRec, _kupilLtcEth, _ltc, _eth,
-                                            new DateTime(2020, 12, 17, 10, 0, 0)));
-            //LTC - BTC
-            // _tradesProccedList.Add(AddItem(_ltcBtc, _ltcBtcSell, _ltcBtcRec, _kupilLtc, _ltc, _btc, 
-            //                                 DateTime.Now));
-
-            //EOS - BTC
-            _tradesProccedList.Add(AddItem(_eosBtc, _eosBtcSell, _eosBtcRec, _kupilEosBtc, _eos, _btc,
-                                            DateTime.Now));
-            //BTG - BTC
-            _tradesProccedList.Add(AddItem(_btgBtc, _btgBtcSell, _btgBtcRec, _kupilBtgBtc, _btg, _btc,
-                                            DateTime.Now));
+            foreach(Models.CurrencyPairInfo curitem in _currencyPairInfo)
+            {
+                _tradesProccedList.Add(AddItem(curitem.BuyRate, curitem.SellRate, curitem.RecomRate,
+                                        curitem.BuySellMode, curitem.FirstSymbol, curitem.SecondSymbol,DateTime.Now));
+            }
         }
 
         Models.TradeInfo AddItem(decimal curBuy, decimal curSell, decimal curRecom, bool kupil,
@@ -173,7 +189,9 @@ namespace CryptoCurrency
             //
             _tradesInfoList = new List<Models.TradeInfo>();
             _tradesProccedList = new List<Models.TradeInfo>();
+            _currencyPairInfo = new List<Models.CurrencyPairInfo>();
 
+            AddWorkPairs();
             AddPairs();
             AddRecommendationInfo();
         }
@@ -341,47 +359,19 @@ namespace CryptoCurrency
                             pair.ColorRecom = "";
                             pair.ColorRecom1 = "";
                             decimal dRate = pair.PurchaseRate;
-                            if (pair.Symbol.Contains(_xrp) && pair.Symbol.Contains(_btc))
+                            foreach (Models.CurrencyPairInfo curitem in _currencyPairInfo)
                             {
-                                if (_kupilXrp) dRate = pair.SellingRate;
-                                pair.Color = GetColor(dRate, _kupilXrp, _xrpBtcRec);
-                                pair.RecommendRate = _xrpBtcRec;
-                                if(_kupilXrp) pair.ColorRecom = pair.Color;
-                                else pair.ColorRecom1 = pair.Color;
-                            }
-                            else if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_btc))
-                            {
-                                if (_kupilLtc) dRate = pair.SellingRate;
-                                pair.Color = GetColor(dRate, _kupilLtc, _ltcBtcRec);
-                                pair.RecommendRate = _ltcBtcRec;
-                                if (_kupilLtc) pair.ColorRecom = pair.Color;
-                                else pair.ColorRecom1 = pair.Color;
-                            }
-                            else if (pair.Symbol.Contains(_ltc) && pair.Symbol.Contains(_eth))
-                            {
-                                if (_kupilLtcEth) dRate = pair.SellingRate;
-                                pair.Color = GetColor(dRate, _kupilLtcEth, _ltcEthRec);
-                                pair.RecommendRate = _ltcEthRec;
-                                if (_kupilLtcEth) pair.ColorRecom = pair.Color;
-                                else pair.ColorRecom1 = pair.Color;
-                            }
-                            else if (pair.Symbol.Contains(_eos) && pair.Symbol.Contains(_btc))
-                            {
-                                if (_kupilEosBtc) dRate = pair.SellingRate;
-                                pair.Color = GetColor(dRate, _kupilEosBtc, _eosBtcRec);
-                                pair.RecommendRate = _eosBtcRec;
-                                if (_kupilEosBtc) pair.ColorRecom = pair.Color;
-                                else pair.ColorRecom1 = pair.Color;
-                            }
-                            else if (pair.Symbol.Contains(_btg) && pair.Symbol.Contains(_btc))
-                            {
-                                if (_kupilBtgBtc) dRate = pair.SellingRate;
-                                pair.Color = GetColor(dRate, _kupilBtgBtc, _btgBtcRec);
-                                pair.RecommendRate = _btgBtcRec;
-                                if (_kupilBtgBtc) pair.ColorRecom = pair.Color;
-                                else pair.ColorRecom1 = pair.Color;
-                            }
+                                if (pair.Symbol.Contains(curitem.FirstSymbol) && pair.Symbol.Contains(curitem.SecondSymbol))
+                                {
+                                    if (curitem.BuySellMode) dRate = pair.SellingRate;
+                                    pair.Color = GetColor(dRate, curitem.BuySellMode, curitem.RecomRate);
+                                    pair.RecommendRate = curitem.RecomRate;
+                                    if (curitem.BuySellMode) pair.ColorRecom = pair.Color;
+                                    else pair.ColorRecom1 = pair.Color;
 
+                                    break;
+                                }
+                            }                            
                             if (pair.Color.Contains("green")) Alert = true;
                             resultList.Add(pair);
                         }
@@ -406,6 +396,17 @@ namespace CryptoCurrency
                 if (item.Color.Contains("green")) tmp.Add(item);
             }
             return JsonConvert.SerializeObject(tmp);
+        }
+
+        public void UpdateWorkCurrencyPairs(List<Models.CurrencyPairInfo> pairs)
+        {
+            _currencyPairInfo.Clear();
+            _tradesProccedList.Clear();
+            _currencyPairs.Clear();
+
+            _currencyPairInfo.AddRange(pairs);
+            AddPairs();
+            AddRecommendationInfo();
         }
     }
 }

@@ -62,7 +62,6 @@
                     <th class="header">Продал</th>
                     <th class="header">Купил</th>
                     <th class="header">Комментарии</th>
-                    <th class="header">Дата</th>
                 </tr>
             </thead>
             @foreach (var item in ViewBag.PairsProc)
@@ -72,7 +71,6 @@
                     <td>@item.SellingRate </td>
                     <td>@item.PurchaseRate </td>
                     <td>@item.Comment </td>
-                    <td>@item.UpdatedDate.ToString()</td>
                 </tr>
             }
         </table>

@@ -51,6 +51,7 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\MySettings.cs" />
     <Compile Include="Models\CryptoRecommendation.cs" />
+    <Compile Include="Models\CurrencyPairInfo.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\TradeInfo.cs" />
     <Compile Include="Models\TradeInfoResponce.cs" />
