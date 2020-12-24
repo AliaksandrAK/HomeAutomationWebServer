@@ -20,6 +20,8 @@ namespace HomeAutomationService
         private int eventId = 1;
         CryptoCurrency.Helpers.Logger _logger;
         CryptoCurrency.Helpers.MySettings _mySettings;
+        bool _startChecking = false;
+        CryptoInfoService _cryptoServ;
 
 
         public HomeAutomationService()
@@ -36,7 +38,7 @@ namespace HomeAutomationService
 
             _logger = new CryptoCurrency.Helpers.Logger();
             _mySettings = new CryptoCurrency.Helpers.MySettings();
-
+            _cryptoServ = new CryptoInfoService();
         }
 
         protected override void OnStart(string[] args)
@@ -47,6 +49,16 @@ namespace HomeAutomationService
             timer.Interval = 300000; // 
             timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
             timer.Start();
+            bool alert;
+            var myPairs = _cryptoServ.GetMyPairsInfo(out alert);
+            var emailTo = _mySettings.ReadSetting("emailTo");
+            if (!_startChecking)
+            {
+                _startChecking = true;
+                _logger.LogFile("Info: Start checking. Send email to: " + emailTo);
+                var msg = _cryptoServ.GetInfoForEmail(myPairs);
+                SendEmailAsync(emailTo, msg);
+            }
         }
 
         protected override void OnStop()
@@ -58,16 +70,15 @@ namespace HomeAutomationService
         {
             // TODO: Insert monitoring activities here.
             eventLog1.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
-            CryptoInfoService cryptoServ = new CryptoInfoService();
             bool alert;
-            var myPairs = cryptoServ.GetMyPairsInfo(out alert);
+            var myPairs = _cryptoServ.GetMyPairsInfo(out alert);
             if (alert)//send message
             {
                 var emailTo = _mySettings.ReadSetting("emailTo");
                 if (!string.IsNullOrEmpty(emailTo))
                 {
                     _logger.LogFile("Info: Send email to: " + emailTo);
-                    var msg = cryptoServ.GetInfoJson(myPairs);
+                    var msg = _cryptoServ.GetInfoForEmail(myPairs, true);
                     SendEmailAsync(emailTo, msg);
                 }
                 else

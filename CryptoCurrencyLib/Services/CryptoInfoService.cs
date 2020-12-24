@@ -397,6 +397,30 @@ namespace CryptoCurrency
             }
             return JsonConvert.SerializeObject(tmp);
         }
+        public string GetInfoForEmail(List<Models.TradeInfo> tradeInfo, bool onlyGreen = false)
+        {
+            string msg = "<table> Pairs INFO:";
+            msg += "<thead> <tr>";
+            msg += "<th> SYMBOL </th>";
+            msg += "<th> SellingRate </th>";
+            msg += "<th> PurchaseRate </th>";
+            msg += "<th> RecommendRate </th>";
+            msg += "</tr> </thead>";
+
+            foreach (Models.TradeInfo item in tradeInfo)
+            {
+                if (onlyGreen && !item.Color.Contains("green")) continue;
+
+                msg += "<tr>";
+                msg += string.Format("<td>{0}</td>", item.Symbol);
+                msg += string.Format("<td>{0}</td>", item.SellingRate);
+                msg += string.Format("<td>{0}</td>", item.PurchaseRate);
+                msg += string.Format("<td>{0}</td>", item.RecommendRate);
+                msg += "</tr>";
+            }
+            msg += "</ table >";
+            return msg;
+        }
 
         public void UpdateWorkCurrencyPairs(List<Models.CurrencyPairInfo> pairs)
         {

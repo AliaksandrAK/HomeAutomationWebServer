@@ -176,7 +176,7 @@ namespace HomeAutomationWebServer.Controllers
             IPAddress[] IpA = ipE.AddressList;
 
             string sysPath = "http://";
-            if (IpA.Length > 0) sysPath = "http://" + IpA[3].ToString() + ":8085/";
+            if (IpA.Length > 3) sysPath = "http://" + IpA[3].ToString() + ":8085/";
             else sysPath = "http://localhost:8085/";
             return Redirect(sysPath);
         }
